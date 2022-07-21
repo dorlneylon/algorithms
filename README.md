@@ -5,6 +5,7 @@
 - DFS
 - BFS
 - Combinatorics (for product use permutations for every single combination)
+- Eratosphene's sieve
 ## Todo list
 - Sparse tables
 - Binary trees
