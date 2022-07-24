@@ -10,3 +10,4 @@
 - Sparse tables
 - Binary trees
 - Polynomial hash + z-function
+- ???
