@@ -9,5 +9,4 @@
 ## Todo list
 - Sparse tables
 - Binary trees
-- Polynomial hash examples
-- Greedy algos examples
+- Polynomial hash + z-function
