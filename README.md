@@ -6,8 +6,11 @@
 - BFS
 - Combinatorics (for product use permutations for every single combination)
 - Eratosphene's sieve
+- Polynomial hashing
+
 ## Todo list
 - Sparse tables
 - Binary trees
-- Polynomial hash + z-function
+- z-function
+- Manacher's algorithm
 - ???
