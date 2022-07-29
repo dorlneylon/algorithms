@@ -13,4 +13,6 @@
 - Sparse tables
 - Binary trees
 - Manacher's algorithm
-- ???
+- Bubble sort
+- Merge sort
+- Quick sort
