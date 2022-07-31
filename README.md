@@ -8,10 +8,10 @@
 - Eratosphene's sieve
 - Polynomial hashing
 - Z-function
+- Binary trees (needs improvements)
 
 ## Todo list
 - Sparse tables
-- Binary trees
 - Manacher's algorithm
 - Bubble sort
 - Merge sort
