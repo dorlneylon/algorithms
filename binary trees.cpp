@@ -2,153 +2,81 @@
 using namespace std;
 
 struct Node {
-    Node* left;
-    Node* right;
-    int data;
-
-    Node(int d) {
-        left = 0;
-        right = 0;
-        data = d;
+    int key, prior;
+    Node *l = 0, *r = 0;
+    Node(int key) : key(key), prior(rand()) {}
+    ~Node() {
+        if (l != 0)
+            delete l;
+        if (r != 0)
+            delete r;
     }
 };
 
-class BinaryTree {
-private:
+bool exists(Node* root, int x) {
+    if (!root) return false;
+    else if (root->key == x) return true;
+    else if (root->key < x)
+        return exists(root->r, x);
+    else
+        return exists(root->l, x);
+}
+
+Node* merge(Node* l, Node* r) {
+    if (!l) return r;
+    if (!r) return l;
+    if (l->prior > r->prior) {
+        l->r = merge(l->r, r);
+        return l;
+    } else {
+        r->l = merge(l, r->l);
+        return r;
+    }
+}
+
+pair<Node*, Node*> split(Node* p, int x) {
+    if (!p) return {0,0};
+    if (p->key <= x) {
+        auto [l, r] = split(p->r, x);
+        p->r = l;
+        return {p,r};
+    } else {
+        auto [l, r] = split(p->l, x);
+        p->l = r;
+        return {l, p};
+    }
+}
+
+Node* insert(Node* root, int x) {
+    if (exists(root, x))
+        return root;
+    auto [l, r] = split(root, x);
+    Node* t = new Node(x);
+    root = merge(l, merge(t, r));
+    return root;
+}
+
+Node* remove(Node* root, int x) {
+    if (!exists(root, x))
+        return root;
+    auto [tmp, r] = split(root, x);
+    auto [l, val] = split(tmp, x-1);
+    delete val;
+    return merge(l, r);
+}
+
+int main() {
     Node* root = 0;
-    int __size = 0;
-
-    bool inner_find(int t, Node* current) {
-        if (current == 0)
-            return false;
-        else if (current->data == t)
-            return true;
-        else if (current->data > t)
-            return inner_find(t, current->left);
-        else
-            return inner_find(t, current->right);
-    }
-
-    Node* inner_insert(int t, Node* current) {
-        if (current == 0) {
-            __size++;
-            return new Node(t);
-        }
-        else if (current->data > t)
-            current->left = inner_insert(t, current->left);
-        else if (current->data < t)
-            current->right = inner_insert(t, current->right);
-        return current;
-    }
-
-    void inner_traversal(Node* current, vector<int> &elements) {
-        if (current == 0)
-            return;
-        inner_traversal(current->left, elements);
-        elements.push_back(current->data);
-        inner_traversal(current->right, elements);
-    }
-
-    Node* inner_remove(int t, Node* current) {
-        if (current == 0)
-            return 0;
-        if (t < current->data)
-            current->left = inner_remove(t, current->left);
-        else if (t > current->data)
-            current->right = inner_remove(t, current->right);
-        else {
-            if (current->left == 0 && current->right == 0) {
-                delete current;
-                return 0;
-            } else if (current->left != 0 && current->right == 0) {
-                Node* tmp = current->left;
-                delete current;
-                return tmp;
-            } else if (current->left == 0 && current->right != 0) {
-                Node* tmp = current->right;
-                delete current;
-                return tmp;
-            } else {
-                int d = inner_min(current->right);
-                current->data = d;
-                current->right = inner_remove(d, current->right);
-            }
-        }
-        return current;
-    }
-
-    int inner_min(Node* current) {
-        if (__size == 0)
-            return 1e9;
-        Node* tmp = current;
-        while (tmp->left) {
-            tmp = tmp->left;
-        }
-        return tmp->data;
-    }
-
-    int inner_max(Node* current) {
-        if (__size == 0)
-            return -1e9;
-
-        Node* tmp = current;
-        while (tmp->right) {
-            tmp = tmp->right;
-        }
-        return tmp->data;
-    }
-public:
-    BinaryTree() {
-    }
-
-    bool find(int t) {
-        return inner_find(t, root);
-    }
-
-    void insert(int t) {
-        root = inner_insert(t, root);
-    }
-
-    int size() {
-        return __size;
-    }
-
-    vector<int> get_elements() {
-        vector<int> elements;
-        inner_traversal(root, elements);
-        return elements;
-    }
-
-    int maximum() {
-        return inner_max(root);
-    }
-
-    int minimum() {
-        return inner_min(root);
-    }
-
-    void remove(int t) {
-        inner_remove(t, root);
-    }
-};
-
-int main () {
-    int n;
-    cin >> n;
-    BinaryTree bt;
-    for (int i = 0; i < n; i++) {
-        int t;
-        cin >> t;
-        bt.insert(t);
-    }
-    vector<int> elems = bt.get_elements();
-    for (int i = 0; i < elems.size(); i++) {
-         cout << elems[i] << " ";
-    }
-    cout << "\n";
-    bt.remove(4);
-    elems = bt.get_elements();
-    for (int i = 0; i < elems.size(); i++) {
-        cout << elems[i] << " ";
-    }
+    for (int i = 0; i < 200000; i+=2)
+        root = insert(root, i);
+    int c = 0;
+    for (int i = 0; i < 200000; i++)
+        if (exists(root, i)) c++;
+    cout << c << "\n";
+    for (int i = 0; i < 200000; i+=4)
+        root = remove(root, i);
+    c = 0;
+    for (int i = 0; i < 200000; i++)
+        if (exists(root, i)) c++;
+    cout << c;
 }
