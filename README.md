@@ -9,10 +9,10 @@
 - Polynomial hashing
 - Z-function
 - Binary trees
+- Bubble sort
+- Merge sort
+- Quick sort
 
 ## Todo list
 - Sparse tables
 - Manacher's algorithm
-- Bubble sort
-- Merge sort
-- Quick sort
