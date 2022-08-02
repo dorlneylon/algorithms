@@ -8,7 +8,7 @@
 - Eratosphene's sieve
 - Polynomial hashing
 - Z-function
-- Binary trees (needs improvements)
+- Binary trees
 
 ## Todo list
 - Sparse tables
