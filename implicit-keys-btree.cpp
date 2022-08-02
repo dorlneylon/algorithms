@@ -3,158 +3,159 @@ using namespace std;
 
 struct Node {
     Node *l = 0, *r = 0;
-    int val, prior, size, minValue;
-    Node(int val): val(val), prior(rand()), size(1), minValue(val) {}
+    int prior, val, size, minvalue;
+    bool rev;
+    Node(int val): size(1), val(val), prior(rand()), minvalue(val), rev(0) {}
     ~Node() {
         delete l;
         delete r;
     }
 };
 
-int getSize(Node *p) {
-    return p ? p->size : 0;
-}
-
-int getminval(Node *p) {
-    return p ? p->minValue : 1e9;
-}
-
-void upd(Node *p) {
-    if (p) {
-        p->size = getSize(p->l) + 1 + getSize(p->r);
-        p->minValue = min(min(getminval(p->l), p->minValue), getminval(p->r));
-    }
-}
-
-int size(Node *root) {
-    return getSize(root);
-}
-
-Node* merge(Node* l, Node* r) {
-    if (!l) return r;
-    if (!r) return l;
-    if (l->prior > r->prior) {
-        l->r = merge(l->r, r);
-        upd(l);
-        return l;
-    } else {
-        r->l = merge(l, r->l);
-        upd(r);
-        return r;
-    }
-}
-
-// Как это блядь работает?
-pair <Node*, Node*> split(Node *root, int x) {
-    if (!root) return {0,0};
-    if (getSize(root->l) < x) {
-        auto [l, r] = split(root->r, x - getSize(root->l) - 1);
-        root->r = l;
-        upd(root);
-        upd(r);
-        return {root, r};
-    } else {
-        auto [l, r] = split(root->l, x);
-        root->l = r;
-        upd(root);
-        upd(l);
-        return {l, root};
-    }
-}
-
-int get(Node *root, int index) {
-    auto [l, tmp] = split(root, index);
-    auto [eq, g] = split(tmp, 1);
-    int res = eq->val;
-    root = merge(l, merge(eq, g));
-    return res;
-}
-
-Node* pushBack(Node* root, int x) {
-    root = merge(root, new Node(x));
-    return root;
-}
-
-Node* pushFront(Node* root, int x) {
-    root = merge(new Node(x), root);
-    return root;
-}
-
-Node* push(Node *root, int ind, int val) {
-    auto [l, g] = split(root, ind);
-    return merge(l, merge(new Node(val), g));
-}
-
-Node* remove(Node *root, int x) {
-    if (!get(root, x)) return root;
-    auto [t, r] = split(root, x);
-    auto [l, val] = split(t, 1);
-    delete val;
-    return merge(l, r);
-}
-
-Node* remove(Node* root, int lx, int rx) {
-    auto [l, t1] = split(root, lx);
-    auto [t2, r] = split(t1, rx-lx+1);
-    return merge(l, r);
-}
-
-int findmin(Node *root, int lx, int rx) {
-    auto [l, t] = split(root, lx);
-    auto [eq, g] = split(t, rx-lx+1);
-    int res = getminval(eq);
-    root = merge(l, merge(eq, g));
-    return res;
-}
-
-int IndexByVal(Node *root, int key) {
-    auto [l, g] = split(root, key-1);
-    int res = getSize(l);
-    root = merge(l,g);
-    return res;
-}
-
-int ValByIndex(Node *p, int ind) {
-    int ls = getSize(p->l);
-    if (ind == ls) return p->val;
-    else if (ind < ls) return ValByIndex(p->l, ind);
-    else return ValByIndex(p->r, ind - ls - 1);
-}
-
-Node* revolve(Node *root, int lx, int rx, int t) {
-    auto [l, tmp] = split(root, lx);
-    auto [eq, r] = split(tmp, rx-lx+1);
-    int n = getSize(eq);
-    int ind = t%n;
-    auto [l2, tmp3] = split(eq, n - ind);
-    eq = merge(tmp3, l2);
-    return merge(l, merge(eq, r));
-}
-
-int main () {
+struct Treap {
     Node *root = 0;
 
-    root = pushBack(root, 1);
-    root = pushBack(root, 2);
-    root = pushBack(root, 3);
-    root = pushBack(root, 4);
-    root = pushBack(root, 5);
+    int size() {
+        return root->size;
+    }
 
-    for (int i = 0; i < size(root); i++)
-        cout << get(root, i) << " ";
+    int nodesize(Node *p) {
+        return p ? p->size : 0;
+    }
 
-//    root = push(root, 2, 0);
-//
-//    for (int i = 0; i < size(root); i++)
-//        cout << get(root, i) << " ";
+    int getSize(Node *root) {
+        if (root) return nodesize(root->l) + 1 + nodesize(root->r);
+        return 0;
+    }
 
-    cout << "\n";
+    long long getminval(Node *p) {
+        return p ? p->minvalue : 1e9;
+    }
 
-    root = revolve(root, 1, 3, 2);
+    long long minimal(Node *p) {
+        return min(getminval(p->l), min((long long)p->val, getminval(p->l)));
+    }
 
-    for (int i = 0; i < size(root); i++)
-        cout << get(root, i) << " ";
+    void push(Node *p) {
+        if (p && p->rev) {
+            p->rev = false;
+            swap (p->l, p->r);
+            if (p->l)
+                p->l->rev ^= true;
+            if (p->r)
+                p->r->rev ^= true;
+        }
+    }
 
-    cout << "\n" << findmin(root, 1, 4);
+    void incr(Node *p, int val) {
+        if (p) {
+            p->val += val;
+            incr(p->l, val);
+            incr(p->r, val);
+        }
+    }
 
+    void update(Node *p) {
+        if (p) {
+            p->size = getSize(p);
+            p->minvalue = minimal(p);
+        }
+    }
+
+    pair <Node*, Node*> split(Node *p, int ind) {
+        if (!p) return {0,0};
+        push(p);
+        if (getSize(p->l) < ind) {
+            auto [l, r] = split(p->r, ind - getSize(p->l) - 1);
+            p->r = l;
+            update(p);
+            update(r);
+            return {p, r};
+        } else {
+            auto [l, r] = split(p->l, ind);
+            p->l = r;
+            update(p);
+            update(l);
+            return {l, p};
+        }
+    }
+
+    Node* merge(Node *l, Node *r) {
+        push(l);
+        push(r);
+        if (!l) return r;
+        if (!r) return l;
+        if (l->prior > r->prior) {
+            l->r = merge(l->r, r);
+            update(l);
+            return l;
+        } else {
+            r->l = merge(l, r->l);
+            update(r);
+            return r;
+        }
+    }
+
+    void insert(int x, int ind) {
+        auto [l, t] = split(root, ind);
+        root = merge(l, merge(new Node(x), t));
+    }
+
+    void pushBack(int x) {
+        root = merge(root, new Node(x));
+    }
+
+    void pushFront(int x) {
+        root = merge(new Node(x), root);
+    }
+
+    int get(int ind) {
+        auto [l, t] = split(root, ind);
+        auto [val, g] = split(t, 1);
+        int res = val->val;
+        root = merge(l, merge(val, g));
+        return res;
+    }
+
+    void remove(int x) {
+        auto [l, t] = split(root, x);
+        auto [val, r] = split(root, 1);
+        delete val;
+        root = merge(l, r);
+    }
+
+    void increment(int lx, int rx, int val) {
+        auto [l, t] = split(root, lx);
+        auto [m, r] = split(t, rx-lx+1);
+        incr(m, val);
+        root = merge(l, merge(m, r));
+    }
+
+    long long minValue(int lx, int rx) {
+        auto [l, t] = split(root, lx);
+        auto [m, r] = split(t, rx-lx+1);
+        auto k = minimal(m);
+        root = merge(l, merge(m, r));
+        return k;
+    }
+
+    void reverse(int lx, int rx) {
+        auto [l, t] = split(root, lx);
+        auto [m, r] = split(root, rx-lx+1);
+        m->rev ^= true;
+        root = merge(l, merge(m, r));
+    }
+
+};
+
+int main() {
+    Treap t;
+    int k;
+    cin >> k;
+
+    for (int i = 0; i < k; i++) {
+        int temp;
+        cin >> temp;
+        t.pushBack(temp);
+    }
 }
