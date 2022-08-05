@@ -12,7 +12,7 @@
 - Bubble sort
 - Merge sort
 - Quick sort
+- Manacher's algorithm
 
 ## Todo list
 - Sparse tables
-- Manacher's algorithm
