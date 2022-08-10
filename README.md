@@ -16,3 +16,4 @@
 
 ## Todo list
 - Sparse tables
+- Fast Fourier Transform
