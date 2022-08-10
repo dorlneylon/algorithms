@@ -1,4 +1,6 @@
 ## Done list
+- Fast Fourier Transform
+- Treaps
 - Segment trees
 - Bellman-Ford
 - Dijkstra
@@ -8,7 +10,6 @@
 - Eratosphene's sieve
 - Polynomial hashing
 - Z-function
-- Binary trees
 - Bubble sort
 - Merge sort
 - Quick sort
@@ -16,4 +17,3 @@
 
 ## Todo list
 - Sparse tables
-- Fast Fourier Transform
