@@ -1,6 +1,7 @@
 ## Done list
 - Fast Fourier Transform
 - Treaps
+- Sparse tables
 - Segment trees
 - Bellman-Ford
 - Dijkstra
@@ -16,4 +17,3 @@
 - Manacher's algorithm
 
 ## Todo list
-- Sparse tables
