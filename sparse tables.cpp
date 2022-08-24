@@ -6,7 +6,7 @@ int n, logn;
 void build(int** st) {
     for (int l = 0; l < logn - 1; l++)
         for (int r = 0; r + (2 << l) <= n; r++)
-            st[l+1][r] = min(st[l][r], st[l][r + (1 << l)]);
+            st[l+1][r] = min(st[l][r], st[l][r + (1 << l)]); // 1 << l -- сдвиг на l битов влево -- 2^l.
 }
 
 int rmq(int **st, int l, int r) {
