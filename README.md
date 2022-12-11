@@ -1,4 +1,5 @@
 ## Done list
+- Splay Trees
 - Fast Fourier Transform
 - Treaps
 - Sparse tables
