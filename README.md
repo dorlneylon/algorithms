@@ -4,6 +4,7 @@
 - Treaps
 - Sparse tables
 - Segment trees
+- Fenwick tree
 - Bellman-Ford
 - Dijkstra
 - DFS

@@ -1,37 +1,40 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-struct Node {
-    Node *l = nullptr, *r = nullptr;
-    int val, prior, mn, size, add = 0, s;
+
+template<typename T>
+struct node {
+    node *l = nullptr, *r = nullptr;
+    T val, prior, mn, size, add = 0, s;
     bool rev = false;
-    Node(int val): val(val), prior(rand()), mn(val), size(1), s(val) {}
-    ~Node() {
+    node(T val): val(val), prior(rand()), mn(val), size(1), s(val) {}
+    ~node() {
         delete l;
         delete r;
     }
 };
 
-struct Treap {
-    Node *root = nullptr;
+template<typename T, class node=node<T> >
+struct treap {
+    node *root = nullptr;
 
-    int ts(Node *p) {
+    T ts(node *p) {
         return p ? p->size : 0;
     }
 
-    int tm(Node *p) {
+    T tm(node *p) {
         return p ? p->mn + p->add : 1e9;
     }
 
-    int tsum(Node *p) {
+    T tsum(node *p) {
         return p ? p->s + p->add : 0;
     }
 
-    int gs(Node *p) {
+    T gs(node *p) {
         return p ? ts(p->l) + ts(p->r) + 1 : 0;
     }
 
-    void push(Node *p) {
+    void push(node *p) {
         if (!p) return;
         p->val += p->add;
         p->mn += p->add;
@@ -47,14 +50,14 @@ struct Treap {
         }
     }
 
-    void upd(Node *p) {
+    void upd(node *p) {
         if (!p) return;
         p->size = ts(p->l) + ts(p->r) + 1;
         p->mn = min(tm(p->l), min(tm(p->r), p->val + p->add));
         p->s = tsum(p->l) + p->val + tsum(p->r) + p->add;
     }
 
-    pair<Node*, Node*> split(Node *p, int k) {
+    pair<node*, node*> split(node *p, T k) {
         if (!p) return {nullptr, nullptr};
         push(p);
         if (gs(p->l) < k) {
@@ -70,7 +73,7 @@ struct Treap {
         }
     }
 
-    Node* merge(Node *l, Node *r) {
+    node* merge(node *l, node *r) {
         push(l), push(r);
         if (!l || !r) return l ? l : r;
         if (l->prior > r->prior) {
@@ -84,11 +87,11 @@ struct Treap {
         }
     }
 
-    void pushBack(int val) {
-        root = merge(root, new Node(val));
+    void pushBack(T val) {
+        root = merge(root, new node(val));
     }
 
-    int mnval(int lx, int rx) {
+    T mnval(int lx, int rx) {
         auto [l, t] = split(root, lx);
         auto [m, r] = split(t, rx-lx+1);
         int res = m->mn;
@@ -96,15 +99,15 @@ struct Treap {
         return res;
     }
 
-    int get(int k) {
+    T get(int k) {
         auto [l, t] = split(root, k);
-        auto [node, r] = split(t, 1);
-        int res = node->val;
-        root = merge(l, merge(node, r));
+        auto [m, r] = split(t, 1);
+        int res = m->val;
+        root = merge(l, merge(m, r));
         return res;
     }
 
-    int get(int lx, int rx) {
+    T get(int lx, int rx) {
         auto [l, t] = split(root, lx);
         auto [m, r] = split(t, rx-lx+1);
         int res = tsum(m);
@@ -112,7 +115,7 @@ struct Treap {
         return res;
     }
 
-    void add(int lx, int rx, int val) {
+    void add(int lx, int rx, T val) {
         auto [l, t] = split(root, lx);
         auto [m, r] = split(t, rx-lx+1);
         m->add += val;
@@ -130,7 +133,7 @@ struct Treap {
 int main() {
     int n, temp;
     cin >> n;
-    Treap t;
+    treap<int> t;
     for (int i = 0; i < n; i++) {
         cin >> temp;
         t.pushBack(temp);
