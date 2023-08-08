@@ -1,6 +1,7 @@
 ## Done list
 - Splay Trees
 - Fast Fourier Transform
+- Karatsuba
 - Treaps
 - Sparse tables
 - Segment trees
