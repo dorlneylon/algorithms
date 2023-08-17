@@ -1,6 +1,6 @@
 ## Done list
 - Splay Trees
-- Fast Fourier Transform
+- Fast Fourier Transform: I've decided to leave my implementation [here](https://gist.github.com/dorlneylon/7f8f3400b89a09df553ea47877be8451) to not overburden the repository with 3 implementations. 
 - Karatsuba
 - Treaps
 - Sparse tables
