@@ -3,73 +3,82 @@ using namespace std;
 
 const uint64_t BASE = 1e9;
 const uint64_t BASE_DIGITS = 9;
+const uint32_t maxn = 1e5;
 
-void rec_kara(uint64_t* a, const uint32_t& one, uint64_t* b, const uint32_t& two, uint64_t* r) {
-    if(min(one, two) <= 20) { // если размер маленький, то быстрее умножать за квадрат
-        for (uint32_t i = 0; i < one; ++i)
-            for (uint32_t j = 0; j < two; ++j)
-                r[i+j] += a[i] * b[j];
+void K(uint64_t *x, uint32_t n, uint64_t *y, uint32_t m, uint64_t *z) {
+    if (n < m) {
+        std::swap(n, m);
+        std::swap(x, y);
+    }
+    std::fill(z, z + n + m, 0);
+    if (m <= 32) {
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                z[i + j] += x[i] * y[j];
         return;
     }
-    const uint32_t x = min(one, two);
-    // запускаемся рекурсивно, выравнивая размеры массивов
-    if (one < two) rec_kara(a, x, b + x, two - x, r + x);
-    if (two < one) rec_kara(a + x, one - x, b, x, r + x);
-    const uint32_t n = (x+1)>>1, right = x>>1;
-    uint64_t* tu = new uint64_t[n<<1];
-    // запускаемся рекрурсивно на половинках массивов
-    rec_kara(a, n, b, n, tu);
-    // переносим в r
-    for (uint32_t i=0;i<((n<<1)-1);++i)
-        r[i] += tu[i], r[i+n] -= tu[i], tu[i] = 0;
-    // аналогично для второй половины
-    rec_kara(a + n, right, b + n, right, tu);
-    for (uint32_t i=0;i<(right<<1)-1;++i)
-        r[i+n] -= tu[i], r[i+2*n] += tu[i];
-    tu[n-1] = a[n-1]; tu[2*n-1] = b[n-1];
-    for (uint32_t i=0;i<right;++i)
-        tu[i] = a[i]+a[i+n], tu[i+n] = b[i]+b[i+n];
-    rec_kara(tu, n, tu + n, n, r + n);
-    delete[] tu;
-}
+    uint32_t m1 = (n + 1) / 2;
+    uint32_t n1 = std::min(m1, m);
+    for (uint32_t i = 0; i + m1 < n; ++i)
+        x[i] += x[i + m1];
+    for (uint32_t j = 0; j + m1 < m; ++j)
+        y[j] += y[j + m1];
+    K(x, m1, y, n1, z + m1);
+    for (uint32_t i = 0; i + m1 < n; ++i)
+        x[i] -= x[i + m1];
+    for (uint32_t j = 0; j + m1 < m; ++j)
+        y[j] -= y[j + m1];
+    uint64_t p[2 * m1 + 2];
+    K(x, m1, y, n1, p);
+    for (uint32_t i = 0; i < m1 + n1; ++i)
+        z[i] += p[i],
+                z[i + m1] -= p[i];
+    K(x + m1, n - m1, y + m1, m - n1, p);
+    for (uint32_t i = 0; i < n + m - m1 - n1; ++i)
+        z[i + m1] -= p[i],
+                z[i + 2 * m1] += p[i];
+};
 
-uint64_t* karatsuba(uint64_t* a, uint64_t* b, const uint32_t& n, const uint32_t& m) {
-    assert(n>0 && m>0 && "Invalid size of arrays");
-    uint64_t* r = new uint64_t[n+m-1];
-    rec_kara(a,n,b,m,r);
-    return r;
+void mul(uint64_t *a, uint32_t n, uint64_t *b, uint32_t m, uint64_t *c, uint32_t &need) {
+    assert(n > 0 && m > 0);
+    need = n + m;
+    K(a, n, b, m, c);
+    uint64_t carry = 0;
+    for (uint32_t i = 0; i < n + m; ++i) {
+        c[i] += carry;
+        carry = c[i] / BASE;
+        c[i] %= BASE;
+    }
+    while (c[need-1] == 0 && need > 1) --need;
 }
 
 int main() {
-    char* s = new char[1000001];
+    char* s = new char[100001];
+    uint64_t a[maxn], b[maxn], c[maxn];
     uint32_t t;
     scanf("%u",&t);
     while (t--) {
+        memset(a,0,sizeof(a));
+        memset(b,0,sizeof(b));
         scanf("%s",s);
         uint32_t n = strlen(s), r=0;
-        uint64_t* a = new uint64_t[n/BASE_DIGITS + 1];
         for (int32_t i = n; i>0; i-=BASE_DIGITS, ++r)
             s[i] = 0, a[r] = atoll(i>=BASE_DIGITS ? s+i-BASE_DIGITS : s);
         scanf("%s",s);
         uint32_t m = strlen(s), l=0;
-        uint64_t* b = new uint64_t[m/BASE_DIGITS + 1];
         for (int32_t i = m; i>0; i-=BASE_DIGITS, ++l)
             s[i] = 0, b[l] = atoll(i>=BASE_DIGITS ? s+i-BASE_DIGITS : s);
-        uint64_t* c = karatsuba(a,b,r,l);
-        uint32_t need = l+r-1;
-        uint64_t carry = 0;
-        for (uint32_t i = 0; i < need; i++)
-            c[i] += carry, carry = c[i] / BASE, c[i] %= BASE;
-        if (carry) printf("%llu",carry);
+        memset(c,0,sizeof(c));
+        uint32_t need;
+        mul(a,r,b,l,c,need);
         printf("%llu",c[need-1]);
         for (uint32_t i = need-1; i>0; --i)
-            printf("%09llu",c[i-1]);
+            printf("%0*llu",BASE_DIGITS,c[i-1]);
         printf("\n");
-        delete[] a;
-        delete[] b;
-        delete[] c;
     }
-
     delete[] s;
     return 0;
 }
+
+//for (uint32_t i=0; i<min(n,m)/2; ++i)
+//  res[i+min(n,m)/2] += a[i] - a[i+min(n,m)/2], res[i+min(n,m)] += b[i] - b[i+min(n,m)/2];
