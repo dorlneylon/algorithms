@@ -14,11 +14,10 @@ const u32 base = 1e9;
 const u32 base_digits = 9;
 
 void karatsuba(i64 *a, u32 n, i64 *b, u32 m, i64 *c) {
-    if (std::min(n,m) <= 32) {
+    if (min(n,m) <= 32) {
         for (u32 i = 0; i < n; i++)
-            for (u32 j = 0; j < m; j++) {
+            for (u32 j = 0; j < m; j++)
                 c[i + j] += a[i] * b[j];
-            }
         return;
     }
 
@@ -27,8 +26,12 @@ void karatsuba(i64 *a, u32 n, i64 *b, u32 m, i64 *c) {
             swap(a, b),
             swap(n,m);
 
-        karatsuba(a, m, b, m, c);
+        i64 t[2*m];
+        memset(t, 0, 2*m*sizeof(i64));
+        karatsuba(a, m, b, m, t);
         karatsuba(a + m, n - m, b, m, c + m);
+        for (u32 i = 0; i < 2*m; ++i)
+            a[i] += t[i];
         return;
     }
 
@@ -44,7 +47,8 @@ void karatsuba(i64 *a, u32 n, i64 *b, u32 m, i64 *c) {
     i64 l[k], r[k], t[n];
     memset(t, 0, sizeof(i64)*n);
     for (u32 i = 0; i < k; i++)
-        l[i] = a[i] + a[i+k], r[i] = b[i] + b[i+k];
+        l[i] = a[i] + a[i+k],
+        r[i] = b[i] + b[i+k];
     karatsuba(l, k, r, k, t); // t = (a0+a1)(b0+b1)
     karatsuba(a, k, b, k, c); // p0 = a0b0
     karatsuba(a+k, k, b+k, k, c+n); // p1 = a1b1

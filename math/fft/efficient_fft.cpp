@@ -29,7 +29,7 @@ namespace fft {
         rev = new uint32_t[1<<nb];
         rev[0] = 0, rev[1] = 1;
         for (int i = 0; i < (1 << nb); i++)
-            rev[i] = (rev[i >> 1] >> 1) + ((i & 1) << (nb - 1));
+            rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (nb - 1));
         wn = new ftype[1<<nb];
         wn[0] = {0,0}, wn[1] = {1,0};
         while (base < nb) {
