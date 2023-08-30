@@ -3,6 +3,9 @@
 - Link-Cut Trees
 - Fast Fourier Transform
 - Karatsuba
+- Disjoint Set Union
+- Kuhn
+- Kruskal
 - Treaps
 - Sparse tables
 - Segment trees
