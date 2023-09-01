@@ -10,7 +10,7 @@ vector<edge> e;
 const int INF = 1000000000;
 
 void ford() {
-    vector<int> d (n, INF);
+    vector<int> d(n, INF);
     d[v] = 0;
     for (;;) {
         bool any = false;
