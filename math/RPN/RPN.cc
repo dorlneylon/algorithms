@@ -27,19 +27,19 @@ void process(stack<int> &s, char op) {
     s.pop();
     switch (op) {
     case '+':
-      s.push(l + r);
+      s.push(r + l);
       break;
     case '-':
-      s.push(l - r);
+      s.push(r - l);
       break;
     case '*':
-      s.push(l * r);
+      s.push(r * l);
       break;
     case '/':
-      s.push(l / r);
+      s.push(r / l);
       break;
     case '%':
-      s.push(l % r);
+      s.push(r % l);
       break;
     }
   }
@@ -95,4 +95,40 @@ int calcExpression(const string &expression) {
     operators.pop();
   }
   return operands.top();
+}
+
+string infixToRPN(const string &expression) {
+  string rpn = "";
+  stack<char> s;
+
+  for (size_t i = 0; i < expression.size(); ++i) {
+    if (expression[i] == ' ')
+      continue;
+    else if (expression[i] == '(')
+      s.push(expression[i]);
+    else if (expression[i] == ')') {
+      while (s.top() != '(')
+        rpn += s.top(), s.pop();
+      s.pop();
+    } else if (expression[i] == '+' || expression[i] == '-' ||
+               expression[i] == '*' || expression[i] == '/' ||
+               expression[i] == '%') {
+      while (!s.empty() && s.top() != '(' &&
+             precedence(s.top()) >= precedence(expression[i])) {
+        rpn += s.top();
+        s.pop();
+      }
+      s.push(expression[i]);
+    } else {
+      while (i < expression.length() && isdigit(expression[i]))
+        rpn += expression[i++];
+      rpn += ' ';
+      i--;
+    }
+  }
+  while (!s.empty()) {
+    rpn += s.top();
+    s.pop();
+  }
+  return rpn;
 }

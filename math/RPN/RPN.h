@@ -35,7 +35,6 @@ template <typename H, typename... T> void debug_out(H h, T... t) {
 
 #define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
 
-
 string infixToRPN(const string &);
 int calcExpression(const string &);
 
@@ -47,8 +46,7 @@ int main() {
     string s;
     getline(cin, s);
     debug(s);
-    cout << infixToRPN(s) << endl;
-    cout << calcExpression(s) << endl;
+    cout << calcExpression(s) << "\n" << infixToRPN(s) << "\n";
   }
   return 0;
 }
