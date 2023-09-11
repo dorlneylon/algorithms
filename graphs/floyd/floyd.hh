@@ -5,7 +5,7 @@ using namespace std;
 
 typedef __uint32_t u32;
 typedef __int32_t  i32;
-const u32 INF = numeric_limits<u32>::max();
+const u32 INF = -1;
 const u32 N = 1e3;
 u32 n, m;
 
@@ -29,7 +29,7 @@ int main() {
 
     for (u32 i = 0; i < n; ++i)
         for (u32 j = 0; j < n; ++j)
-            cout << (d[i][j] < INF ? d[i][j] : "inf") << " \n"[j==n-1];
+            cout << D[i*n + j] << " \n"[j==n-1];
 }
 
 #endif
