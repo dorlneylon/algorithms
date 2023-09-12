@@ -1,4 +1,5 @@
 .vscode
 *.out
 .DS_Store
+*.dSYM
 *.out
