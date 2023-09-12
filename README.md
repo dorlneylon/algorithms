@@ -4,6 +4,8 @@
 - Fast Fourier Transform
 - Karatsuba
 - Disjoint Set Union
+- Dinic
+- Reverse Polish Notation
 - Kuhn
 - Kruskal
 - Treaps
