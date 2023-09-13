@@ -29,7 +29,7 @@ void upd(int *a, int *b, int *add, int l, int r, int x) {
 }
 
 void solve() {
-  int a[maxn], b[c], add[c] = {0};
+  int a[maxn] = {0}, b[c] = {0}, add[c] = {0};
   int n;
 
   cin >> n;
@@ -38,6 +38,8 @@ void solve() {
     cin >> a[i];
     b[i / c] += a[i];
   }
+
+  debug(make_pair(a, maxn), make_pair(b, c), make_pair(add, c));
 
   int q;
   cin >> q;
@@ -52,8 +54,11 @@ void solve() {
       cout << sum(a, b, add, x, y) << "\n";
       break;
     case 2:
+      debug(make_pair(a, maxn), make_pair(b, c), make_pair(add, c));
       cin >> x >> y >> d;
       upd(a, b, add, x, y, d);
+      debug(make_pair(a, maxn), make_pair(b, c), make_pair(add, c));
+      break;
     }
   }
 }

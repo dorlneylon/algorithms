@@ -5,14 +5,25 @@ using namespace std;
 
 template <typename T> void __print(T x) { cerr << x; }
 
-template <typename T> void __print(T *x, int sz) {
-  cerr << "[ " << __print(x[0]);
-  for (int i = 1; i < sz; ++i)
-    cerr << ", ", __print(x[i]);
+template <typename T> void __print(pair<T *, int> x) {
+  cerr << "[ ";
+  __print(x.first[0]);
+  for (int i = 1; i < x.second; ++i)
+    cerr << ", ", __print(x.first[i]);
   cerr << " ]";
 }
 
-const int maxn = 1e5, c = 330;
+void debug_out() { cerr << endl; }
+
+template <typename H, typename... T> void debug_out(H h, T... t) {
+  cerr << " ";
+  __print(h);
+  debug_out(t...);
+}
+
+#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+
+const int maxn = 10, c = 4;
 
 void solve();
 
