@@ -1,10 +1,7 @@
-// https://codeforces.com/contest/1717/problem/F
-#ifndef __DINIC_H
-#define __DINIC_H
+#ifndef LINK_CUT_HH
+#define LINK_CUT_HH
 #include <bits/stdc++.h>
 using namespace std;
-
-const int maxn = 6, INF = 1e9;
 
 template <typename T> void __print(T x) { cerr << x; }
 template <typename T, typename V> void __print(pair<T, V> x) {
@@ -23,26 +20,6 @@ template <typename T> void __print(vector<T> x) {
   }
   cerr << " ]";
 }
-template <typename T> void __print(queue<T> q) {
-  cerr << "[ ";
-  while (!q.empty()) {
-    __print(q.front());
-    q.pop();
-    if (!q.empty())
-      cerr << ", ";
-  }
-  cerr << " ]";
-}
-
-template <typename T> void __print(T *x) {
-  cerr << "[ ";
-  for (int i = 0; i < maxn; ++i) {
-    if (i)
-      cerr << ", ";
-    __print(x[i]);
-  }
-  cerr << " ]";
-}
 
 void debug_out() { cerr << endl; }
 
@@ -57,15 +34,8 @@ template <typename H, typename... T> void debug_out(H h, T... t) {
 void solve();
 
 int main() {
-  int t = 1;
-  cin.tie(0);
   ios::sync_with_stdio(0);
-
-  // cin >> t;
-
-  while (t--) {
-    solve();
-  }
+  cin.tie(0);
+  solve();
 }
-
 #endif

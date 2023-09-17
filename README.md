@@ -1,4 +1,5 @@
 ## Done list
+- Dinic/Edmonds-Karp max flow algorithms
 - Splay Trees
 - Link-Cut Trees
 - Fast Fourier Transform

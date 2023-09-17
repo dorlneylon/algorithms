@@ -1,7 +1,5 @@
 #include "dinic.hh"
 
-const int INF = numeric_limits<int>::max();
-
 int n, m, u[10005], v[10005], c[10005], a[10005], b[10005], du[10005],
     in[20005], s, t, ss, tt;
 
