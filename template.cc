@@ -24,13 +24,13 @@ template <typename T> void __print(vector<T> x) {
 template <typename K, typename V> void __print(unordered_map<K, V> &m) {
   cerr << "[ ";
   for (auto [k, v] : m) {
+    if (k != m.begin()->first)
+      cerr << ", ";
     cerr << "{ ";
     __print(k);
     cerr << ": ";
     __print(v);
     cerr << " }";
-    if (k != prev(m.end())->first)
-      cerr << ", ";
   }
   cerr << " ]";
 }
@@ -47,7 +47,12 @@ template <typename H, typename... T> void debug_out(H h, T... t) {
 
 typedef long long ll;
 
-void solve() {}
+void solve() {
+  unordered_map<ll, ll> m;
+  for (int i = 0; i < 10; ++i)
+    m[i] = rand();
+  debug(m);
+}
 
 int main() {
   cin.tie(0);
