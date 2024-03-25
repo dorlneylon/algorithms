@@ -13,7 +13,7 @@ typedef long long ll;
 typedef unsigned long long ull;
 
 void merge(ll *a, ll l, ll r) {
-  for (ll gap = (l + r) >> 1; gap > 0; gap >>= 1)
+  for (ll gap = (r - l) >> 1; gap > 0; gap >>= 1)
     for (ll i = 0; l + gap + i < r; ++i)
       if (a[l + i] > a[l + gap + i])
         swap(a[l + i], a[l + gap + i]);
